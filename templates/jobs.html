@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="logs">Works logs</h1>
+{% for i in range(jobs.__len__())%}
+<div class="col-md6 border rounded">
+    <table class="table">
+        <h1>Action # {{i + 1}}</h1>
+        <thead>
+            <tr class="table-secondary">
+              <th scope="col">Title of the activity</th>
+              <th scope="col">Team leader</th>
+              <th scope="col">Duration</th>
+              <th scope="col">List of coloborators</th>
+              <th scope="col">Is finished</th>
+            </tr>
+        </thead>
+        <body>
+            <tr class="table-info">
+                <td>{{jobs[i].title}}</td>
+                <td>{{jobs[i].team_leader}}</td>
+                <td>{{jobs[i].work_size}} hours</td>
+                <td>{{jobs[i].collaborators}}</td>
+                <td>{{jobs[i].is_finished}}</td>
+            </tr>
+        </body>
+    </table>
+</div>
+{% endfor %}
+{% endblock %}
