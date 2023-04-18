@@ -12,9 +12,9 @@ class Jobs(SqlAlchemyBase, UserMixin):
     job = sqlalchemy.Column(sqlalchemy.String)
     work_size = sqlalchemy.Column(sqlalchemy.Integer)
     collaborators = sqlalchemy.Column(sqlalchemy.String)
-    start_date = sqlalchemy.Column(sqlalchemy.DateTime)
-    end_date = sqlalchemy.Column(sqlalchemy.DateTime)
-    is_finished = sqlalchemy.Column(sqlalchemy.Boolean)
+    start_date = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
+    end_date = sqlalchemy.Column(sqlalchemy.DateTime, nullable=True)
+    is_finished = sqlalchemy.Column(sqlalchemy.Boolean, nullable=True)
 
     def __repr__(self):
         return f'<{self.id}> team_leader:{self.team_leader}, title:{self.title}, job:{self.job}'
