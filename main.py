@@ -64,9 +64,9 @@ def myjobs():
     return render_template("jobs.html", jobs=jobs)
 
 @app.route('/addjob',  methods=['GET', 'POST'])
+@login_required
 def addjob():
     form = AddJob()
-    print(form.validate_on_submit())
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         job = Jobs()
@@ -79,6 +79,51 @@ def addjob():
         db_sess.commit()
         return redirect('/')
     return render_template('addjob.html', form=form)
+
+@app.route('/jobs_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def jobs_delete(id):
+    db_sess = db_session.create_session()
+    jobs = db_sess.query(Jobs).filter(Jobs.id == id).first()
+    if jobs:
+        db_sess.delete(jobs)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+@app.route('/addjob/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_jobs(id):
+    form = AddJob()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        job = db_sess.query(Jobs).filter(Jobs.id == id, ((Jobs.team_leader == current_user.id) | (current_user.id == 1))).first()
+        if job:
+            form.team_leader.data = job.team_leader
+            form.title.data = job.title
+            form.collaborators.data = job.collaborators
+            form.is_finished.data = job.is_finished
+            form.work_size.data = job.work_size
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        job = db_sess.query(Jobs).filter(Jobs.id == id, ((Jobs.team_leader == current_user.id) | (current_user.id == 1))).first()
+        if job:
+            job.team_leader = form.team_leader.data
+            job.title = form.title.data
+            job.collaborators = form.collaborators.data
+            job.is_finished = form.is_finished.data
+            job.work_size = form.work_size.data
+            db_sess.commit()
+            return redirect('/')
+        else:
+            abort(404)
+    return render_template('addjob.html',
+                           title='Редактирование работы',
+                           form=form
+                           )
 
 @app.route('/news',  methods=['GET', 'POST'])
 @login_required
@@ -97,13 +142,12 @@ def add_news():
     return render_template('news.html', title='Добавление новости',
                            form=form)
 
+
 @app.route('/news_delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def news_delete(id):
     db_sess = db_session.create_session()
-    news = db_sess.query(News).filter(News.id == id,
-                                      News.user == current_user
-                                      ).first()
+    news = db_sess.query(News).filter(News.id == id, ((News.user == current_user) | (current_user.id == 1))).first()
     if news:
         db_sess.delete(news)
         db_sess.commit()
@@ -117,9 +161,7 @@ def edit_news(id):
     form = NewsForm()
     if request.method == "GET":
         db_sess = db_session.create_session()
-        news = db_sess.query(News).filter(News.id == id,
-                                          News.user == current_user
-                                          ).first()
+        news = db_sess.query(News).filter(News.id == id, ((News.user == current_user) | (current_user.id == 1))).first()
         if news:
             form.title.data = news.title
             form.content.data = news.content
@@ -128,9 +170,7 @@ def edit_news(id):
             abort(404)
     if form.validate_on_submit():
         db_sess = db_session.create_session()
-        news = db_sess.query(News).filter(News.id == id,
-                                          News.user == current_user
-                                          ).first()
+        news = db_sess.query(News).filter(News.id == id, ((News.user == current_user) | (current_user.id == 1))).first()
         if news:
             news.title = form.title.data
             news.content = form.content.data

@@ -15,10 +15,12 @@
     <a class="btn btn-primary" href="/logout">{{ current_user.name }}</a>
     <a href="/addjob" class="btn btn-secondary">Добавить работу</a>
     <a href="news" class="btn btn-secondary">Добавить новость</a>
+    <a href="/jobs" class="btn btn-secondary">Список работ</a>
     {% else %}
     <p>
         <a class="btn btn-primary" href="/register">Зарегистрироваться</a>
         <a class="btn btn-success" href="/login">Войти</a>
+        <a href="/jobs" class="btn btn-secondary">Список работ</a>
     </p>
     {% endif %}
 
